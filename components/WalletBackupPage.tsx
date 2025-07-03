@@ -21,14 +21,7 @@ import { Wallet, Shield, Plus, Eye, EyeOff, Copy, CheckCircle, AlertTriangle, Tr
 import { QRCodeSVG } from "qrcode.react"
 
 // Add MetaMask type declaration
-declare global {
-  interface Window {
-    ethereum?: {
-      isMetaMask?: boolean
-      request: (args: { method: string; params?: any[] }) => Promise<any>
-    }
-  }
-}
+
 
 interface BackupWallet {
   id: string
@@ -772,3 +765,4 @@ export default function WalletBackupPage() {
     </div>
   )
 }
+
