@@ -1,16 +1,34 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect, useRef } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Eye, EyeOff, Mail, Lock, User, CheckCircle, XCircle, ArrowLeft, Shield, Zap, Globe } from "lucide-react"
-import { useGoogleAuth } from "@/hooks/useGoogleAuth"
+import type React from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  User,
+  CheckCircle,
+  XCircle,
+  ArrowLeft,
+  Shield,
+  Zap,
+  Globe,
+} from "lucide-react";
+import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 
 // Interactive particles that respond to form progress
 const generateInteractiveParticles = (count: number) => {
@@ -23,28 +41,52 @@ const generateInteractiveParticles = (count: number) => {
     angle: Math.random() * Math.PI * 2,
     opacity: Math.random() * 0.6 + 0.2,
     color: i % 3 === 0 ? "emerald" : i % 3 === 1 ? "purple" : "teal",
-  }))
-}
+  }));
+};
 
 // Floating UI elements that orbit around the form
 const floatingElements = [
-  { icon: Shield, label: "Quantum Security", angle: 0, radius: 300, color: "emerald" },
-  { icon: Zap, label: "Instant Setup", angle: 120, radius: 280, color: "purple" },
-  { icon: Globe, label: "Global Access", angle: 240, radius: 320, color: "teal" },
-]
+  {
+    icon: Shield,
+    label: "Quantum Security",
+    angle: 0,
+    radius: 300,
+    color: "emerald",
+  },
+  {
+    icon: Zap,
+    label: "Instant Setup",
+    angle: 120,
+    radius: 280,
+    color: "purple",
+  },
+  {
+    icon: Globe,
+    label: "Global Access",
+    angle: 240,
+    radius: 320,
+    color: "teal",
+  },
+];
 
 export default function SignupPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const { signInWithGoogle, isLoading: isGoogleLoading, error: googleError } = useGoogleAuth()
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isMounted, setIsMounted] = useState(false)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [particles, setParticles] = useState(() => generateInteractiveParticles(50))
-  const [formProgress, setFormProgress] = useState(0)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const {
+    signInWithGoogle,
+    isLoading: isGoogleLoading,
+    error: googleError,
+  } = useGoogleAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [particles, setParticles] = useState(() =>
+    generateInteractiveParticles(50)
+  );
+  const [formProgress, setFormProgress] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -52,7 +94,7 @@ export default function SignupPage() {
     email: "",
     password: "",
     confirmPassword: "",
-  })
+  });
 
   const [errors, setErrors] = useState({
     name: "",
@@ -60,35 +102,40 @@ export default function SignupPage() {
     password: "",
     confirmPassword: "",
     general: "",
-  })
+  });
 
   // Ensure client-side rendering for animations
   useEffect(() => {
-    setIsMounted(true)
-  }, [])
+    setIsMounted(true);
+  }, []);
 
   // Mouse tracking for 3D effects
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect()
+        const rect = containerRef.current.getBoundingClientRect();
         setMousePosition({
           x: (e.clientX - rect.left - rect.width / 2) / rect.width,
           y: (e.clientY - rect.top - rect.height / 2) / rect.height,
-        })
+        });
       }
-    }
+    };
 
-    window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
-  }, [])
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   // Calculate form progress
   useEffect(() => {
-    const fields = [formData.name, formData.email, formData.password, formData.confirmPassword]
-    const filledFields = fields.filter((field) => field.trim() !== "").length
-    setFormProgress((filledFields / fields.length) * 100)
-  }, [formData])
+    const fields = [
+      formData.name,
+      formData.email,
+      formData.password,
+      formData.confirmPassword,
+    ];
+    const filledFields = fields.filter((field) => field.trim() !== "").length;
+    setFormProgress((filledFields / fields.length) * 100);
+  }, [formData]);
 
   // Animate particles based on form progress
   useEffect(() => {
@@ -99,44 +146,49 @@ export default function SignupPage() {
           x: (particle.x + particle.speed * Math.cos(particle.angle)) % 100,
           y: (particle.y + particle.speed * Math.sin(particle.angle)) % 100,
           opacity: 0.2 + (formProgress / 100) * 0.6,
-        })),
-      )
-    }, 50)
+        }))
+      );
+    }, 50);
 
-    return () => clearInterval(interval)
-  }, [formProgress])
+    return () => clearInterval(interval);
+  }, [formProgress]);
 
   // Check for OAuth errors
   useEffect(() => {
-    if (!searchParams) return
+    if (!searchParams) return;
 
-    const error = searchParams.get("error")
+    const error = searchParams.get("error");
     if (error) {
       const errorMessages = {
         oauth_error: "Google sign-in was cancelled or failed",
         missing_code: "Google sign-in failed - missing authorization code",
         invalid_state: "Google sign-in failed - security check failed",
         oauth_callback_failed: "Google sign-in failed - please try again",
-      }
+      };
 
       setErrors((prev) => ({
         ...prev,
-        general: errorMessages[error as keyof typeof errorMessages] || "Sign-in failed",
-      }))
+        general:
+          errorMessages[error as keyof typeof errorMessages] ||
+          "Sign-in failed",
+      }));
     }
-  }, [searchParams])
+  }, [searchParams]);
 
   // Password validation
-  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-  const isPasswordValid = passwordRegex.test(formData.password)
-  const isConfirmPasswordValid = formData.confirmPassword === formData.password && formData.confirmPassword !== ""
+  const passwordRegex =
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const isPasswordValid = passwordRegex.test(formData.password);
+  const isConfirmPasswordValid =
+    formData.confirmPassword === formData.password &&
+    formData.confirmPassword !== "";
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field as keyof typeof errors]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }))
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
-  }
+  };
 
   const validateForm = () => {
     const newErrors = {
@@ -145,42 +197,42 @@ export default function SignupPage() {
       password: "",
       confirmPassword: "",
       general: "",
-    }
+    };
 
     if (!formData.name.trim()) {
-      newErrors.name = "Name is required"
+      newErrors.name = "Name is required";
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = "Email is required"
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email"
+      newErrors.email = "Please enter a valid email";
     }
 
     if (!formData.password) {
-      newErrors.password = "Password is required"
+      newErrors.password = "Password is required";
     } else if (!isPasswordValid) {
       newErrors.password =
-        "Password must be at least 8 characters with uppercase, lowercase, number, and special character"
+        "Password must be at least 8 characters with uppercase, lowercase, number, and special character";
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password"
+      newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match"
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
-    setErrors(newErrors)
-    return !Object.values(newErrors).some((error) => error !== "")
-  }
+    setErrors(newErrors);
+    return !Object.values(newErrors).some((error) => error !== "");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!validateForm()) return
+    if (!validateForm()) return;
 
-    setIsLoading(true)
-    setErrors((prev) => ({ ...prev, general: "" }))
+    setIsLoading(true);
+    setErrors((prev) => ({ ...prev, general: "" }));
 
     try {
       const response = await fetch("/api/auth/signup", {
@@ -193,26 +245,32 @@ export default function SignupPage() {
           email: formData.email,
           password: formData.password,
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (data.success) {
-        router.push("/verify-account")
+        router.push("/verify-account");
       } else {
-        setErrors((prev) => ({ ...prev, general: data.message || "Signup failed. Please try again." }))
+        setErrors((prev) => ({
+          ...prev,
+          general: data.message || "Signup failed. Please try again.",
+        }));
       }
     } catch (error) {
-      setErrors((prev) => ({ ...prev, general: "An unexpected error occurred. Please try again." }))
+      setErrors((prev) => ({
+        ...prev,
+        general: "An unexpected error occurred. Please try again.",
+      }));
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleGoogleSignup = async () => {
-    setErrors((prev) => ({ ...prev, general: "" }))
-    await signInWithGoogle()
-  }
+    setErrors((prev) => ({ ...prev, general: "" }));
+    await signInWithGoogle();
+  };
 
   return (
     <div
@@ -229,15 +287,23 @@ export default function SignupPage() {
           <div
             className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl transition-all duration-1000"
             style={{
-              background: `conic-gradient(from ${formProgress * 3.6}deg, #10b981, #8b5cf6, #06b6d4, #10b981)`,
-              transform: `scale(${1 + formProgress / 200}) rotate(${formProgress * 2}deg)`,
+              background: `conic-gradient(from ${
+                formProgress * 3.6
+              }deg, #10b981, #8b5cf6, #06b6d4, #10b981)`,
+              transform: `scale(${1 + formProgress / 200}) rotate(${
+                formProgress * 2
+              }deg)`,
             }}
           />
           <div
             className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl transition-all duration-1000"
             style={{
-              background: `conic-gradient(from ${-formProgress * 2.4}deg, #8b5cf6, #06b6d4, #10b981, #8b5cf6)`,
-              transform: `scale(${1 + formProgress / 300}) rotate(${-formProgress * 1.5}deg)`,
+              background: `conic-gradient(from ${
+                -formProgress * 2.4
+              }deg, #8b5cf6, #06b6d4, #10b981, #8b5cf6)`,
+              transform: `scale(${1 + formProgress / 300}) rotate(${
+                -formProgress * 1.5
+              }deg)`,
             }}
           />
         </div>
@@ -254,7 +320,11 @@ export default function SignupPage() {
                   top: `${particle.y}%`,
                   opacity: particle.opacity,
                   backgroundColor:
-                    particle.color === "emerald" ? "#10b981" : particle.color === "purple" ? "#8b5cf6" : "#06b6d4",
+                    particle.color === "emerald"
+                      ? "#10b981"
+                      : particle.color === "purple"
+                      ? "#8b5cf6"
+                      : "#06b6d4",
                   transform: `scale(${particle.size})`,
                   boxShadow: `0 0 ${particle.size * 4}px currentColor`,
                 }}
@@ -264,23 +334,48 @@ export default function SignupPage() {
         )}
 
         {/* Layer 3: Constellation Lines */}
-        <svg className="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          className="absolute inset-0 w-full h-full opacity-20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <defs>
-            <linearGradient id="constellation-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#10b981" stopOpacity={formProgress / 100} />
-              <stop offset="50%" stopColor="#8b5cf6" stopOpacity={formProgress / 100} />
-              <stop offset="100%" stopColor="#06b6d4" stopOpacity={formProgress / 100} />
+            <linearGradient
+              id="constellation-gradient"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="100%"
+            >
+              <stop
+                offset="0%"
+                stopColor="#10b981"
+                stopOpacity={formProgress / 100}
+              />
+              <stop
+                offset="50%"
+                stopColor="#8b5cf6"
+                stopOpacity={formProgress / 100}
+              />
+              <stop
+                offset="100%"
+                stopColor="#06b6d4"
+                stopOpacity={formProgress / 100}
+              />
             </linearGradient>
           </defs>
           <path
-            d={`M${20 + formProgress}%,20% Q50%,${30 + formProgress / 4}% ${80 - formProgress / 2}%,40% T90%,60%`}
+            d={`M${20 + formProgress}%,20% Q50%,${30 + formProgress / 4}% ${
+              80 - formProgress / 2
+            }%,40% T90%,60%`}
             stroke="url(#constellation-gradient)"
             strokeWidth="1"
             fill="none"
             className="animate-pulse"
           />
           <path
-            d={`M10%,${80 - formProgress / 3}% Q${40 + formProgress / 2}%,70% 70%,${60 + formProgress / 4}% T95%,30%`}
+            d={`M10%,${80 - formProgress / 3}% Q${
+              40 + formProgress / 2
+            }%,70% 70%,${60 + formProgress / 4}% T95%,30%`}
             stroke="url(#constellation-gradient)"
             strokeWidth="1"
             fill="none"
@@ -293,10 +388,16 @@ export default function SignupPage() {
       {/* Floating UI Elements */}
       {isMounted &&
         floatingElements.map((element, index) => {
-          const Icon = element.icon
-          const angle = element.angle + ((Date.now() / 5000) * 360) / 1000 // Slow rotation
-          const x = 50 + Math.cos((angle * Math.PI) / 180) * ((element.radius / window.innerWidth) * 50)
-          const y = 50 + Math.sin((angle * Math.PI) / 180) * ((element.radius / window.innerHeight) * 50)
+          const Icon = element.icon;
+          const angle = element.angle + ((Date.now() / 5000) * 360) / 1000; // Slow rotation
+          const x =
+            50 +
+            Math.cos((angle * Math.PI) / 180) *
+              ((element.radius / window.innerWidth) * 50);
+          const y =
+            50 +
+            Math.sin((angle * Math.PI) / 180) *
+              ((element.radius / window.innerHeight) * 50);
 
           return (
             <div
@@ -313,10 +414,12 @@ export default function SignupPage() {
                 className={`flex items-center gap-3 px-4 py-2 rounded-full bg-gray-800/40 backdrop-blur-sm border border-${element.color}-500/30`}
               >
                 <Icon className={`h-5 w-5 text-${element.color}-400`} />
-                <span className="text-sm text-white/80 font-medium">{element.label}</span>
+                <span className="text-sm text-white/80 font-medium">
+                  {element.label}
+                </span>
               </div>
             </div>
-          )
+          );
         })}
 
       {/* Main Content */}
@@ -348,7 +451,9 @@ export default function SignupPage() {
             <div
               className="absolute -inset-4 rounded-3xl blur-xl transition-all duration-500"
               style={{
-                background: `conic-gradient(from ${formProgress * 3.6}deg, rgba(16, 185, 129, 0.3), rgba(139, 92, 246, 0.3), rgba(6, 182, 212, 0.3))`,
+                background: `conic-gradient(from ${
+                  formProgress * 3.6
+                }deg, rgba(16, 185, 129, 0.3), rgba(139, 92, 246, 0.3), rgba(6, 182, 212, 0.3))`,
                 opacity: 0.3 + (formProgress / 100) * 0.4,
               }}
             />
@@ -408,7 +513,9 @@ export default function SignupPage() {
                       />
                     </svg>
                   )}
-                  {isGoogleLoading ? "Connecting to Google..." : "Continue with Google"}
+                  {isGoogleLoading
+                    ? "Connecting to Google..."
+                    : "Continue with Google"}
                 </Button>
 
                 {/* Divider */}
@@ -417,7 +524,9 @@ export default function SignupPage() {
                     <span className="w-full border-t border-gray-600" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-gray-900 px-4 text-gray-400 font-medium">Or create with email</span>
+                    <span className="bg-gray-900 px-4 text-gray-400 font-medium">
+                      Or create with email
+                    </span>
                   </div>
                 </div>
 
@@ -426,7 +535,10 @@ export default function SignupPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Name Field */}
                     <div className="space-y-2">
-                      <Label htmlFor="name" className="text-gray-300 font-medium">
+                      <Label
+                        htmlFor="name"
+                        className="text-gray-300 font-medium"
+                      >
                         Full Name
                       </Label>
                       <div className="relative group">
@@ -436,9 +548,13 @@ export default function SignupPage() {
                           type="text"
                           placeholder="Enter your full name"
                           value={formData.name}
-                          onChange={(e) => handleInputChange("name", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("name", e.target.value)
+                          }
                           className={`pl-12 h-12 bg-gray-800/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-xl transition-all duration-300 ${
-                            errors.name ? "border-red-500 focus:border-red-500" : ""
+                            errors.name
+                              ? "border-red-500 focus:border-red-500"
+                              : ""
                           }`}
                         />
                       </div>
@@ -452,7 +568,10 @@ export default function SignupPage() {
 
                     {/* Email Field */}
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-gray-300 font-medium">
+                      <Label
+                        htmlFor="email"
+                        className="text-gray-300 font-medium"
+                      >
                         Email Address
                       </Label>
                       <div className="relative group">
@@ -462,9 +581,13 @@ export default function SignupPage() {
                           type="email"
                           placeholder="Enter your email"
                           value={formData.email}
-                          onChange={(e) => handleInputChange("email", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("email", e.target.value)
+                          }
                           className={`pl-12 h-12 bg-gray-800/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-xl transition-all duration-300 ${
-                            errors.email ? "border-red-500 focus:border-red-500" : ""
+                            errors.email
+                              ? "border-red-500 focus:border-red-500"
+                              : ""
                           }`}
                         />
                       </div>
@@ -481,7 +604,10 @@ export default function SignupPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Password Field */}
                     <div className="space-y-2">
-                      <Label htmlFor="password" className="text-gray-300 font-medium">
+                      <Label
+                        htmlFor="password"
+                        className="text-gray-300 font-medium"
+                      >
                         Password
                       </Label>
                       <div className="relative group">
@@ -491,9 +617,13 @@ export default function SignupPage() {
                           type={showPassword ? "text" : "password"}
                           placeholder="Create password"
                           value={formData.password}
-                          onChange={(e) => handleInputChange("password", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("password", e.target.value)
+                          }
                           className={`pl-12 pr-12 h-12 bg-gray-800/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-xl transition-all duration-300 ${
-                            errors.password ? "border-red-500 focus:border-red-500" : ""
+                            errors.password
+                              ? "border-red-500 focus:border-red-500"
+                              : ""
                           }`}
                         />
                         <Button
@@ -503,27 +633,111 @@ export default function SignupPage() {
                           className="absolute right-2 top-2 h-8 w-8 p-0 hover:bg-gray-700/50 text-gray-500 hover:text-gray-300 rounded-lg"
                           onClick={() => setShowPassword(!showPassword)}
                         >
-                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
                         </Button>
                       </div>
                       {formData.password && (
-                        <div className="flex items-center gap-2 text-sm">
-                          {isPasswordValid ? (
-                            <CheckCircle className="h-4 w-4 text-emerald-400" />
-                          ) : (
-                            <XCircle className="h-4 w-4 text-red-400" />
-                          )}
-                          <span className={isPasswordValid ? "text-emerald-400" : "text-gray-400"}>
-                            Strong password
-                          </span>
+                        <div className="space-y-1 text-sm mt-2 px-1">
+                          <div className="flex items-center gap-2">
+                            {formData.password.length >= 8 ? (
+                              <CheckCircle className="h-4 w-4 text-emerald-400" />
+                            ) : (
+                              <XCircle className="h-4 w-4 text-red-400" />
+                            )}
+                            <span
+                              className={
+                                formData.password.length >= 8
+                                  ? "text-emerald-400"
+                                  : "text-gray-400"
+                              }
+                            >
+                              At least 8 characters
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/[A-Z]/.test(formData.password) ? (
+                              <CheckCircle className="h-4 w-4 text-emerald-400" />
+                            ) : (
+                              <XCircle className="h-4 w-4 text-red-400" />
+                            )}
+                            <span
+                              className={
+                                /[A-Z]/.test(formData.password)
+                                  ? "text-emerald-400"
+                                  : "text-gray-400"
+                              }
+                            >
+                              One uppercase letter
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/[a-z]/.test(formData.password) ? (
+                              <CheckCircle className="h-4 w-4 text-emerald-400" />
+                            ) : (
+                              <XCircle className="h-4 w-4 text-red-400" />
+                            )}
+                            <span
+                              className={
+                                /[a-z]/.test(formData.password)
+                                  ? "text-emerald-400"
+                                  : "text-gray-400"
+                              }
+                            >
+                              One lowercase letter
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/\d/.test(formData.password) ? (
+                              <CheckCircle className="h-4 w-4 text-emerald-400" />
+                            ) : (
+                              <XCircle className="h-4 w-4 text-red-400" />
+                            )}
+                            <span
+                              className={
+                                /\d/.test(formData.password)
+                                  ? "text-emerald-400"
+                                  : "text-gray-400"
+                              }
+                            >
+                              One number
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {/[@$!%*?&]/.test(formData.password) ? (
+                              <CheckCircle className="h-4 w-4 text-emerald-400" />
+                            ) : (
+                              <XCircle className="h-4 w-4 text-red-400" />
+                            )}
+                            <span
+                              className={
+                                /[@$!%*?&]/.test(formData.password)
+                                  ? "text-emerald-400"
+                                  : "text-gray-400"
+                              }
+                            >
+                              One special character
+                            </span>
+                          </div>
                         </div>
                       )}
-                      {errors.password && <p className="text-sm text-red-400">{errors.password}</p>}
+
+                      {errors.password && (
+                        <p className="text-sm text-red-400">
+                          {errors.password}
+                        </p>
+                      )}
                     </div>
 
                     {/* Confirm Password Field */}
                     <div className="space-y-2">
-                      <Label htmlFor="confirmPassword" className="text-gray-300 font-medium">
+                      <Label
+                        htmlFor="confirmPassword"
+                        className="text-gray-300 font-medium"
+                      >
                         Confirm Password
                       </Label>
                       <div className="relative group">
@@ -533,9 +747,13 @@ export default function SignupPage() {
                           type={showConfirmPassword ? "text" : "password"}
                           placeholder="Confirm password"
                           value={formData.confirmPassword}
-                          onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("confirmPassword", e.target.value)
+                          }
                           className={`pl-12 pr-12 h-12 bg-gray-800/50 border-gray-600 text-white placeholder:text-gray-500 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-xl transition-all duration-300 ${
-                            errors.confirmPassword ? "border-red-500 focus:border-red-500" : ""
+                            errors.confirmPassword
+                              ? "border-red-500 focus:border-red-500"
+                              : ""
                           }`}
                         />
                         <Button
@@ -543,9 +761,15 @@ export default function SignupPage() {
                           variant="ghost"
                           size="sm"
                           className="absolute right-2 top-2 h-8 w-8 p-0 hover:bg-gray-700/50 text-gray-500 hover:text-gray-300 rounded-lg"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
                         >
-                          {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          {showConfirmPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
                         </Button>
                       </div>
                       {formData.confirmPassword && (
@@ -555,12 +779,22 @@ export default function SignupPage() {
                           ) : (
                             <XCircle className="h-4 w-4 text-red-400" />
                           )}
-                          <span className={isConfirmPasswordValid ? "text-emerald-400" : "text-gray-400"}>
+                          <span
+                            className={
+                              isConfirmPasswordValid
+                                ? "text-emerald-400"
+                                : "text-gray-400"
+                            }
+                          >
                             Passwords match
                           </span>
                         </div>
                       )}
-                      {errors.confirmPassword && <p className="text-sm text-red-400">{errors.confirmPassword}</p>}
+                      {errors.confirmPassword && (
+                        <p className="text-sm text-red-400">
+                          {errors.confirmPassword}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -568,7 +802,9 @@ export default function SignupPage() {
                   {(errors.general || googleError) && (
                     <Alert className="border-red-500/20 bg-red-500/10 text-red-300 rounded-xl">
                       <XCircle className="h-4 w-4 text-red-400" />
-                      <AlertDescription>{errors.general || googleError}</AlertDescription>
+                      <AlertDescription>
+                        {errors.general || googleError}
+                      </AlertDescription>
                     </Alert>
                   )}
 
@@ -576,7 +812,9 @@ export default function SignupPage() {
                   <Button
                     type="submit"
                     className="w-full h-12 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white border-0 rounded-xl font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/25"
-                    disabled={isLoading || !isPasswordValid || !isConfirmPasswordValid}
+                    disabled={
+                      isLoading || !isPasswordValid || !isConfirmPasswordValid
+                    }
                   >
                     {isLoading ? (
                       <div className="flex items-center gap-2">
@@ -605,5 +843,5 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
