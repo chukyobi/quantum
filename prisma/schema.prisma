@@ -1,0 +1,69 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               Int             @id @default(autoincrement())
+  name             String
+  email            String          @unique
+  password         String?
+  isVerified       Boolean         @default(false) // Added field
+  wallets          Wallet[]        // One-to-many relation with Wallet
+  backupWallets    BackupWallet[]  // One-to-many relation with BackupWallet using email
+  transactions     Transaction[]   // One-to-many relation with Transaction
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @default(now()) @updatedAt
+  otp              String?         // Field for storing OTP
+  otpExpires       DateTime?       // Field for storing OTP expiration time
+}
+
+model Wallet {
+  id        Int      @id @default(autoincrement())
+  email     String   // Foreign key to the User model based on email
+  user      User     @relation(fields: [email], references: [email]) // Link to the User model by email
+  walletId  String   @unique // Unique identifier for the wallet (could be a wallet address or ID)
+  balance   Float    @default(0.0) // Wallet balance
+  currency  String   // Currency type (e.g., USD, BTC, ETH)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BackupWallet {
+  id              Int       @id @default(autoincrement())
+  email           String    // Foreign key to User's email
+  user            User      @relation(fields: [email], references: [email]) // Link to User model by email
+  name            String    // Wallet name (e.g., Metamask, Binance)
+  logo            String?   // Path to logo (optional, e.g., "/assets/metamask.svg")
+  publicAddress   String?   // Public address for portfolio tracking
+  seedPhrase      String?   // Encrypted seed phrase for backup
+  privateKey      String?   // Encrypted private key for recovery (optional)
+  qrCodeData      String?   // QR Code data for wallet connection
+  manualBackup    Json?     // JSON for manual backup details (e.g., API keys)
+  balance         Float     @default(0.0) // Default balance
+  currency        String?   // Currency type (e.g., BTC, ETH)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Transaction {
+  id              Int       @id @default(autoincrement())
+  userEmail       String    // Foreign key to User's email
+  transactionType String    // e.g., 'deposit' or 'withdraw'
+  amount          Float
+  status          String    // e.g., 'pending' or 'successful'
+  currency        String    // e.g., 'BTC', 'ETH'
+  transactionDate DateTime  @default(now())
+  user            User      @relation(fields: [userEmail], references: [email]) // Link to User by email
+}
+
+model EmailList {
+  id        Int      @id @default(autoincrement())  // Unique identifier for each email entry
+  email     String   @unique  // Ensure each email is unique
+  createdAt DateTime @default(now())  // Timestamp when the email was added
+  status    String   @default("pending")  // You can set the status to 'pending', 'verified', etc.
+}
