@@ -83,7 +83,7 @@ export default function LiveSupportWidget() {
         id: Date.now().toString(),
         type: "ai",
         content:
-          "👋 Hi there! I'm your AI assistant from FinanceX. I'm here to help you with any questions about your account, transactions, or our services. How can I assist you today?",
+          "👋 Hi there! I'm your AI assistant from Goldman Private. I'm here to help you with any questions about your account, transactions, or our services. How can I assist you today?",
         timestamp: new Date(),
         sender: {
           name: "FinanceX AI",
