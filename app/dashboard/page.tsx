@@ -36,7 +36,7 @@ import WalletBackupPage from "@/components/WalletBackupPage"
 import AddFundsModal from "@/components/AddFundsModal"
 import GoldmanX from "@/components/GoldmanX"
 import SendMoneyModal from "@/components/SendMoneyModal"
-import RequestPaymentModal from "@/components/requestPaymentModal"
+import RequestPaymentModal from "@/components/RequestPaymentModal"
 
 interface UserData {
   id: number
