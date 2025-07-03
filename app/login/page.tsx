@@ -1,10 +1,10 @@
-// app/login/page.tsx
+"use client"
+
+import { useSearchParams } from "next/navigation"
+import LoginForm from "./LoginForm"
 import { Suspense } from "react"
-import dynamic from "next/dynamic"
 
-const LoginForm = dynamic(() => import("./LoginForm"), { ssr: false })
-
-export default function LoginPage() {
+export default function LoginPageWrapper() {
   return (
     <Suspense fallback={<div className="text-white text-center p-8">Loading login...</div>}>
       <LoginForm />
